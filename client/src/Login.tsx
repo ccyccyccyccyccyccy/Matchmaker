@@ -2,11 +2,20 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
+import type UserNoPassword from "../../shared/types/User";
+import { useUser } from "./main"; // Adjust the import path as necessary
 
 function Login() {    
 
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
+    //const [user, setUser] = useState<UserNoPassword | null>(null)
+    const userContext = useUser();
+    if (!userContext) {
+        throw new Error("useUser must be used within a UserProvider");
+    }
+    const { setUser } = userContext;
+    
     const navigate = useNavigate()
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -14,7 +23,9 @@ function Login() {
         axios.post("http://localhost:3001/login", { email, password })
         .then(result => {
             console.log(result)
-            if(result.data === "Success"){
+            if(result.data?.status === "Success"){
+                setUser(result.data.user as UserNoPassword)
+                localStorage.setItem("token", result.data.token)
                 navigate("/home")
             }else{
                 navigate("/register")

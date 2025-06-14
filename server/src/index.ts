@@ -1,4 +1,6 @@
 import { app, mongoose } from "./config";
+import { generateToken, verifyToken } from "./auth";
+import UserNoPassword from '../../shared/types/User'; // Import User type from shared types
 
 const UserModel = require("./model/User")
 import { Request, Response } from "express";
@@ -49,7 +51,18 @@ app.post(
             .then((user: User | null) => {
                 if (user) {
                     if (user.password === password) {
-                        res.json("Success");
+                        const token = generateToken(user._id); // Generate JWT
+                        const userNoPassword: UserNoPassword = {
+                            _id: user._id,
+                            name: user.name,
+                            email: user.email,
+                            phone: user.phone,
+                            biography: user.biography,}
+                        return res.json({
+                        status: "Success",  
+                        token: token,
+                        user: userNoPassword, // Return user without password
+                    });
                     } else {
                         res.json("The password is incorrect");
                     }
