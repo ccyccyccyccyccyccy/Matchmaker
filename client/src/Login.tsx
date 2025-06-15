@@ -24,8 +24,9 @@ function Login() {
         .then(result => {
             console.log(result)
             if(result.data?.status === "Success"){
-                setUser(result.data.user as UserNoPassword)
+                console.log("token: "+result.data.token)
                 localStorage.setItem("token", result.data.token)
+                setUser(result.data.user as UserNoPassword)
                 navigate("/home")
             }else{
                 navigate("/register")

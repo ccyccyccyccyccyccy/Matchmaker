@@ -48,7 +48,7 @@ const projects = [
     title: "AI Research", 
     projectDescription: "Exploring machine learning applications.", 
     initiatorID: "507f191e810c19729de860ea", // Replace with a valid ObjectId
-    roleDecription: "Looking for data scientists.",
+    roleDescription: "Looking for data scientists.",
     vancancies: 3,
     postedDate: new Date(),
     tags: ["AI", "Machine Learning", "Research"],
@@ -58,7 +58,7 @@ const projects = [
         title: "Web Development",
         projectDescription: "Building a responsive web application.",
         initiatorID: "507f191e810c19729de860eb", // Replace with a valid ObjectId
-        roleDecription: "Seeking front-end developers.",
+        roleDescription: "Seeking front-end developers.",
         vancancies: 2,
         postedDate: new Date(),
         tags: ["Web Development", "JavaScript", "React"],
@@ -68,7 +68,7 @@ const projects = [
         title: "Mobile App",
         projectDescription: "Creating a cross-platform mobile app.",
         initiatorID: "507f191e810c19729de860ec", // Replace with a valid ObjectId
-        roleDecription: "Looking for mobile developers.",
+        roleDescription: "Looking for mobile developers.",
         vancancies: 4,
         postedDate: new Date(),
         tags: ["Mobile Development", "Flutter", "iOS", "Android"],
@@ -78,7 +78,7 @@ const projects = [
         title: "Blockchain Project",
         projectDescription: "Developing a decentralized application.",
         initiatorID: "507f191e810c19729de860ed", // Replace with a valid ObjectId
-        roleDecription: "Seeking blockchain developers.",   
+        roleDescription: "Seeking blockchain developers.",   
         vancancies: 5,
         postedDate: new Date(),
         tags: ["Blockchain", "Smart Contracts", "Ethereum"],
@@ -88,7 +88,7 @@ const projects = [
         title: "Data Analysis",
         projectDescription: "Analyzing large datasets for insights.",
         initiatorID: "507f191e810c19729de860ee", // Replace with a valid ObjectId
-        roleDecription: "Looking for data analysts.",   
+        roleDescription: "Looking for data analysts.",   
         vancancies: 2,
         postedDate: new Date(),
         tags: ["Data Analysis", "Statistics", "Python"],
@@ -103,7 +103,7 @@ const seedProjectDatabase = async (userIDs: String[]) => {
       ...project,
       initiatorID: userIDs[index % userIDs.length] // Assigning user IDs in a round-robin fashion
     }));
-    await ProjectModel.insertMany(projects);
+    await ProjectModel.insertMany(projectsWithUserIds);
     console.log("Mock data inserted!");
   } catch (error) {
     console.error("Error inserting mock data:", error);

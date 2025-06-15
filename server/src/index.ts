@@ -37,6 +37,10 @@ interface RegisterRequestBody {
     email: string;
     password: string;}
 
+// interface ProjectDetailRequestBody {
+//     projectID: string
+// }
+
 
 
 app.post(
@@ -76,7 +80,7 @@ app.post("/register", (req: Request<{}, any, RegisterRequestBody>, res:Response)
     .catch((err: unknown) => res.json(err))
 })
 
-app.get("/allProjects", async(req: Request, res: Response) => {
+app.get("/allProjects", async(req: Request, res: Response) => { //returns all projects
     try{
         const projects: Project[]= await ProjectModel.find({}).lean()
         return res.json(projects);
@@ -86,6 +90,59 @@ app.get("/allProjects", async(req: Request, res: Response) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 })
+
+app.get("/projectDetail", async(req: Request, res: Response)=>{
+    const {projectID} = req.query;
+    if (!projectID) {
+    return res.status(400).json({ error: "project ID is required" });
+  }
+    const query = { _id: projectID };
+    try{
+        const project:Project= await ProjectModel.findOne(query).lean()
+        if (project){
+            const userQuery= { _id: project.initiatorID };
+            const initiator: User = await UserModel.findOne(userQuery).lean()
+            if (initiator){
+                return res.status(200).json({
+                    project: project,
+                    initiator: initiator
+                })
+            }
+            return res.status(404).json({ error: "project is found but not initiator. project id:"+ project._id });
+        }
+        return res.status(404).json({ error: "project is not found" });
+    }
+    catch (error) {
+        console.error("Error fetching projects:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+
+})
+
+app.get("/myProjects" , async (req: Request, res: Response)=>{
+    const {userID} = req.query;
+    if (!userID) {
+    return res.status(400).json({ error: "user ID is required" });
+  }
+  const token = req.headers.authorization?.split(" ")[1];
+   if (!token) {
+    return res.status(401).json({ error: "Unauthorized: No token provided" });
+  }
+
+  try {
+    const decoded = verifyToken(token); // Verify token
+    console.log("User verified")
+    //res.json({ message: "Access granted", user: decoded });
+    const query= { initiatorID: userID };
+    const projects: Project[]= await ProjectModel.find(query).lean()
+    return res.status(200).json(projects)
+  } catch (error) {
+    return res.status(403).json({ error: "Invalid token" });
+  }
+}
+
+
+)
 
 
 app.listen(3001, () => {
