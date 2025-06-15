@@ -1,8 +1,11 @@
 import { app, mongoose } from "./config";
 import { generateToken, verifyToken } from "./auth";
 import UserNoPassword from '../../shared/types/User'; // Import User type from shared types
+import User from "./types/User"; 
+import Project from "../../shared/types/Project";
 
 const UserModel = require("./model/User")
+const ProjectModel = require("./model/Project");
 import { Request, Response } from "express";
 import dotenv from 'dotenv';
 dotenv.config();
@@ -34,14 +37,7 @@ interface RegisterRequestBody {
     email: string;
     password: string;}
 
-interface User {
-    _id: string;
-    name: string;
-    email: string;
-    password: string;
-    phone?: string;
-    biography?: string;
-}
+
 
 app.post(
     "/login",
@@ -78,6 +74,17 @@ app.post("/register", (req: Request<{}, any, RegisterRequestBody>, res:Response)
     UserModel.create(req.body as RegisterRequestBody)
     .then((user: User) => res.json(user))
     .catch((err: unknown) => res.json(err))
+})
+
+app.get("/allProjects", async(req: Request, res: Response) => {
+    try{
+        const projects: Project[]= await ProjectModel.find({}).lean()
+        return res.json(projects);
+    }
+    catch (error) {
+        console.error("Error fetching projects:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 })
 
 

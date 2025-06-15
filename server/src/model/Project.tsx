@@ -4,7 +4,7 @@ import{mongoose} from "../config";
  const ProjectSchema = new mongoose.Schema({
     title:String,
     projectDescription:String,
-    roleDecription:String, 
+    roleDescription:String, 
     initiatorID:  { type: mongoose.Schema.Types.ObjectId, ref: "users" },
     vancancies: Number,
     postedDate: { type: Date, default: Date.now },
