@@ -43,6 +43,11 @@ function Profile(){
     const { setUser } = userContext;
     const { user } = userContext;
     const token = localStorage.getItem("token")
+
+    const handleAddClick = () => {
+    navigate("/profile/${user._id}/addProject");
+  };
+
     if (!token){
        navigate("/login")
         alert("You must be logged in.")
@@ -73,6 +78,9 @@ function Profile(){
             <h1>
                 user profile: {user?._id}
             </h1>
+            <button onClick={handleAddClick}>
+            Add project
+            </button>
         </center>
         <div className="container mt-5">
             <h2>My Projects</h2>

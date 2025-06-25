@@ -140,10 +140,30 @@ app.get("/myProjects" , async (req: Request, res: Response)=>{
     return res.status(403).json({ error: "Invalid token" });
   }
 }
-
-
 )
 
+app.get("/addProject", (req: Request, res: Response)=>{
+    const {userID} = req.query;
+    if (!userID) {
+    return res.status(400).json({ error: "user ID is required" });
+  }
+  const token = req.headers.authorization?.split(" ")[1];
+   if (!token) {
+    return res.status(401).json({ error: "Unauthorized: No token provided" });
+  }
+  try{
+    const decoded = verifyToken(token); // Verify token
+    console.log("User verified")
+    ProjectModel.create(req.body as Project)
+    return res.status(200)
+    }
+    catch(error){
+        return res.status(404).json({error})
+
+    }
+
+}
+)
 
 app.listen(3001, () => {
     console.log("server is running")

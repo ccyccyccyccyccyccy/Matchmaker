@@ -9,6 +9,7 @@ import Login from './Login'
 import Home from './Home'
 import ProjectPage from './ProjectPage'
 import Profile from './Profile'
+import InputForm from './InputForm'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -21,6 +22,7 @@ function App() {
         <Route path='/home' element={<Home />}/>
         <Route path="/project/:projectId" element={<ProjectPage />} />
         <Route path="/profile/:userId" element={<Profile />} />
+        <Route path="/profile/:userId/addProject" element={<InputForm />} />
       </Routes>
     </BrowserRouter>
   )
