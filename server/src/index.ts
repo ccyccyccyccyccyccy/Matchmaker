@@ -142,7 +142,7 @@ app.get("/myProjects" , async (req: Request, res: Response)=>{
 }
 )
 
-app.get("/addProject", (req: Request, res: Response)=>{
+app.post("/addProject", (req: Request, res: Response)=>{
     const {userID} = req.query;
     if (!userID) {
     return res.status(400).json({ error: "user ID is required" });

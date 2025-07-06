@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { MultiSelect } from "react-multi-select-component-19";
+import axios from 'axios'
+import { useUser } from "./main"; 
+import type Project from "../../shared/types/Project";
 
 function InputForm() {
+  const token = localStorage.getItem("token")
   const [formData, setFormData] = useState({
     title: "",
     projectDescription: "",
@@ -10,12 +14,24 @@ function InputForm() {
   });
   type Duration= "< 1 month" | "1-3 months" | "3-6 months" | "6-12 months" | "> 1 year"; 
   const [duration, setDuration] = useState<Duration>("< 1 month");
-  const[tags, setTags]= useState<typeof Option[]>([]);
-  const tagOptions = [
+
+  type TagOption = {
+  label: string;
+  value: string;
+};
+
+  const[tags, setTags]= useState<TagOption[]>([]);
+  //const[tags, setTags]= useState<string[]>([]);
+  const tagOptions: TagOption[] = [
   { label: "AI", value: "AI" },
   { label: "Data", value: "Data" },
   { label: "Business", value: "Business" },
 ];
+const userContext = useUser();
+            if (!userContext) {
+                throw new Error("useUser must be used within a UserProvider");
+            }
+const { user } = userContext;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,15 +41,50 @@ function InputForm() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Form Submitted:", formData);
-    alert("Form submitted successfully!");
-  };
+  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   console.log("Form Submitted:", formData);
+  //   alert("Form submitted successfully!");
+  // };
+
+  const handleSubmit=()=>{
+    if (!formData.title || !formData.projectDescription || !formData.roleDescription || !formData.vacancies){
+      alert("Input valid values into the form")
+      return 
+    }
+    const project: Project = {
+      _id:"placeholder", 
+    title: formData.title, 
+    projectDescription: formData.projectDescription,
+    roleDescription: formData.roleDescription,
+    initiatorID: user._id, 
+    vacancies: formData.vacancies?formData.vacancies:0,
+    postedDate: new Date(), 
+    tags: tags.map(tag=> tag.value), 
+    duration: duration
+  }
+  const { _id, ...projectWithoutId } = project;
+   axios.post("http://localhost:3001/addProject", projectWithoutId,  
+            {headers: {
+    Authorization: `Bearer ${token}`
+  }, 
+    params:{userID: user._id}, 
+  }
+        )
+            .then(response => {
+                if (response.status==200){
+                    alert("Successfully added project")
+                }
+                else{
+                    console.log(response.data)
+                }
+            })
+            .catch(error => console.error("Error adding projects:", error));
+  }
 
   return (
     <>
-    <form onSubmit={handleSubmit}>
+    <form >
       <div>
         <label htmlFor="title">Title:</label>
         <input
@@ -78,7 +129,7 @@ function InputForm() {
           required
         />
       </div>
-      <button type="submit">Submit</button>
+      {/* <button type="submit">Submit</button> */}
     </form>
     <label>
       Select project duration 
@@ -111,7 +162,7 @@ function InputForm() {
         </select>
       </label> */}
       <div>
-      <h1>Select Fruits</h1>
+      <h1>Select Tags</h1>
       <pre>{JSON.stringify(tags)}</pre>
       <MultiSelect
         options={tagOptions}
@@ -119,6 +170,9 @@ function InputForm() {
         onChange={setTags}
         labelledBy="Select"
       />
+      <button onClick={handleSubmit}>
+      Add project
+    </button>
     </div>
       <hr />
       <p>Project duration: {duration}</p>
