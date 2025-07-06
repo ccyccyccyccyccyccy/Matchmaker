@@ -153,9 +153,9 @@ app.post("/addProject", (req: Request, res: Response)=>{
   }
   try{
     const decoded = verifyToken(token); // Verify token
-    console.log("User verified")
     ProjectModel.create(req.body as Project)
-    return res.status(200)
+     console.log("server success")
+    return res.status(201).json({status:"Success"})
     }
     catch(error){
         return res.status(404).json({error})

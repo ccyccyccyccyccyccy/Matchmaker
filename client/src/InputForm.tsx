@@ -72,8 +72,9 @@ const { user } = userContext;
   }
         )
             .then(response => {
-                if (response.status==200){
+                if (response.status==201){
                     alert("Successfully added project")
+                    console.log("success")
                 }
                 else{
                     console.log(response.data)
@@ -174,9 +175,11 @@ const { user } = userContext;
       Add project
     </button>
     </div>
+    <div>
       <hr />
       <p>Project duration: {duration}</p>
       <p>Project tags: {tags.join(', ')}</p>
+      </div>
     </>
   );
 }
