@@ -50,6 +50,39 @@ const { user } = userContext;
   //   alert("Form submitted successfully!");
   // };
 
+  const handleUpdate=()=>{
+     if (!formData.title || !formData.projectDescription || !formData.roleDescription || !formData.vacancies){
+      alert("Input valid values into the form")
+      return 
+    }
+    const updateData={
+      title: formData.title, 
+      projectDescription: formData.projectDescription,
+      roleDescription: formData.roleDescription,
+      vacancies: formData.vacancies??0,
+      tags: tags.map(tag=> tag.value), 
+      duration: duration
+    }
+
+    axios.post("http://localhost:3001/updateProject", {projectID: project._id, updateData: updateData},  
+            {headers: {
+    Authorization: `Bearer ${token}`
+  }, 
+    params:{userID: user._id}, 
+  }
+        ).then(response => {
+                if (response.status==200){
+                    alert("Successfully updated project")
+                    console.log("success")
+                }
+                else{
+                    console.log(response.data)
+                }
+            })
+            .catch(error => console.error("Error updating projects:", error));
+
+  }
+
   const handleSubmit=()=>{
     if (!formData.title || !formData.projectDescription || !formData.roleDescription || !formData.vacancies){
       alert("Input valid values into the form")
@@ -123,7 +156,7 @@ const { user } = userContext;
         />
       </div>
       <div>
-        <label htmlFor="vacancies">Number of vancancies:</label>
+        <label htmlFor="vacancies">Number of vacancies:</label>
         <input
         type="number"
           id="vacancies"
@@ -174,9 +207,12 @@ const { user } = userContext;
         onChange={setTags}
         labelledBy="Select"
       />
-      <button onClick={handleSubmit}>
+      {!project && <button onClick={handleSubmit}>
       Add project
-    </button>
+    </button>}
+    {project && <button onClick={handleUpdate}>
+      Update project
+    </button>}
     </div>
     <div>
       <hr />

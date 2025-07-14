@@ -165,6 +165,37 @@ app.post("/addProject", (req: Request, res: Response)=>{
 }
 )
 
+app.post("/updateProject", async(req: Request, res: Response)=>{
+    const {userID} = req.query;
+    if (!userID) {
+    return res.status(400).json({ error: "user ID is required" });
+  }
+  const token = req.headers.authorization?.split(" ")[1];
+   if (!token) {
+    return res.status(401).json({ error: "Unauthorized: No token provided" });
+  }
+  try{
+    const decoded = verifyToken(token); // Verify token
+    const filter = { _id: req.body.projectID }; // Replace with your document's ID
+    const update = {
+      $set: req.body.updateData,
+    };
+    const result = await ProjectModel.updateOne(filter, update);
+     if (result.matchedCount > 0) {
+      console.log(`Successfully matched and updated ${result.modifiedCount} document(s).`);
+      return res.status(200).json({status:"Success"})
+    } else {
+      return res.status(404).json({status:"No documents matched the filter."});
+    }
+    
+    }
+    catch(error){
+        return res.status(404).json({error})
+    }
+
+}
+)
+
 app.listen(3001, () => {
     console.log("server is running")
 })

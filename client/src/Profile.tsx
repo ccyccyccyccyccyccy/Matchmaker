@@ -9,7 +9,6 @@ import type UserNoPassword from "../../shared/types/User";
 function ProjectCard({ project }: { project: Project }) {
     const navigate = useNavigate()
     const handleClick=()=>{
-        console.log("client", project.vacancies)
         navigate("/profile/${user._id}/editProject", { state: { project: project } });
         return
     }
