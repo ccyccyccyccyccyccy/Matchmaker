@@ -23,6 +23,7 @@ function App() {
         <Route path="/project/:projectId" element={<ProjectPage />} />
         <Route path="/profile/:userId" element={<Profile />} />
         <Route path="/profile/:userId/addProject" element={<InputForm />} />
+        <Route path="/profile/:userId/editProject" element={<InputForm />} />
       </Routes>
     </BrowserRouter>
   )

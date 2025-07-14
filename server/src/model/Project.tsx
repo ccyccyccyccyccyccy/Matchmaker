@@ -6,7 +6,7 @@ import{mongoose} from "../config";
     projectDescription:String,
     roleDescription:String, 
     initiatorID:  { type: mongoose.Schema.Types.ObjectId, ref: "users" },
-    vancancies: Number,
+    vacancies: Number,
     postedDate: { type: Date, default: Date.now },
     tags: { type: [String], default: [] }, 
     duration: { type: String, enum: ["< 1 month", "1-3 months", "3-6 months", "6-12 months", "> 1 year"] }, 

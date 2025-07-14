@@ -7,6 +7,13 @@ import type UserNoPassword from "../../shared/types/User";
 
 
 function ProjectCard({ project }: { project: Project }) {
+    const navigate = useNavigate()
+    const handleClick=()=>{
+        console.log("client", project.vacancies)
+        navigate("/profile/${user._id}/editProject", { state: { project: project } });
+        return
+    }
+
     return (
         <div className="card mb-3">
             <div className="card-body"
@@ -24,7 +31,11 @@ function ProjectCard({ project }: { project: Project }) {
                 <h5 className="card-title">{project.title}</h5>
                 <p className="card-text">{project.projectDescription}</p>
                  <p className="card-text">Role: {project.roleDescription}</p>
+                 <p className="card-text">Vacancies: {project.vacancies}</p>
                 <p className="card-text"><small className="text-muted">Posted on {new Date(project.postedDate).toLocaleDateString()}</small></p>
+                <button onClick={handleClick}>
+                Edit project
+                </button>
             </div>
         </div>
     )

@@ -1,27 +1,30 @@
 import React, { useState } from "react";
 import { MultiSelect } from "react-multi-select-component-19";
 import axios from 'axios'
+import { useParams, useLocation } from 'react-router-dom';
 import { useUser } from "./main"; 
 import type Project from "../../shared/types/Project";
 
 function InputForm() {
+  const location = useLocation(); // State passed via navigate
+  const { project } = location.state || {};
   const token = localStorage.getItem("token")
   const [formData, setFormData] = useState({
-    title: "",
-    projectDescription: "",
-    roleDescription: "",
-    vacancies: null
+    title:project?.title ?? "",
+    projectDescription: project?.projectDescription ??"",
+    roleDescription: project?.roleDescription ??"",
+    vacancies: project?.vacancies ?? null
   });
   type Duration= "< 1 month" | "1-3 months" | "3-6 months" | "6-12 months" | "> 1 year"; 
-  const [duration, setDuration] = useState<Duration>("< 1 month");
+  const [duration, setDuration] = useState<Duration>( project?.duration ?? "< 1 month");
 
   type TagOption = {
   label: string;
   value: string;
 };
 
-  const[tags, setTags]= useState<TagOption[]>([]);
-  //const[tags, setTags]= useState<string[]>([]);
+  const[tags, setTags]= useState<TagOption[]>(project?.tags??[]);
+  
   const tagOptions: TagOption[] = [
   { label: "AI", value: "AI" },
   { label: "Data", value: "Data" },
@@ -58,7 +61,7 @@ const { user } = userContext;
     projectDescription: formData.projectDescription,
     roleDescription: formData.roleDescription,
     initiatorID: user._id, 
-    vacancies: formData.vacancies?formData.vacancies:0,
+    vacancies: formData.vacancies??0,
     postedDate: new Date(), 
     tags: tags.map(tag=> tag.value), 
     duration: duration
