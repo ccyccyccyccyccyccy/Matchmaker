@@ -63,7 +63,7 @@ function Home(){
                 setProjects(response.data);
             })
             .catch(error => console.error("Error fetching projects:", error));
-    }, []);
+    }, [projects]);
 
     return(
         <>

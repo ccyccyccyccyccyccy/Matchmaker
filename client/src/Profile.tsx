@@ -6,11 +6,32 @@ import type Project from "../../shared/types/Project";
 import type UserNoPassword from "../../shared/types/User";
 
 
-function ProjectCard({ project }: { project: Project }) {
+function ProjectCard({ project, user }: { project: Project, user: UserNoPassword }) {
     const navigate = useNavigate()
     const handleClick=()=>{
         navigate("/profile/${user._id}/editProject", { state: { project: project } });
         return
+    }
+
+    const handleDelete=(user: UserNoPassword)=>{
+        
+        const token = localStorage.getItem("token")
+        axios.post("http://localhost:3001/deleteProject", {projectID: project._id},  
+            {headers: {
+    Authorization: `Bearer ${token}`
+  }, 
+    params:{userID: user._id}, 
+  }
+        ).then(response => {
+                if (response.status==200){
+                    alert("Successfully deleted project")
+                    console.log("success")
+                }
+                else{
+                    console.log(response.data)
+                }
+            })
+            .catch(error => console.error("Error deleting projects:", error));
     }
 
     return (
@@ -34,6 +55,9 @@ function ProjectCard({ project }: { project: Project }) {
                 <p className="card-text"><small className="text-muted">Posted on {new Date(project.postedDate).toLocaleDateString()}</small></p>
                 <button onClick={handleClick}>
                 Edit project
+                </button>
+                <button onClick={()=>{handleDelete(user)}}>
+                Delete project
                 </button>
             </div>
         </div>
@@ -80,7 +104,7 @@ function Profile(){
                 }
             })
             .catch(error => console.error("Error fetching projects:", error));
-    }, []);
+    }, [projects]);
 
     return(
         <>
@@ -97,7 +121,7 @@ function Profile(){
             <div className="row">
                 {projects&& projects.map((project: Project) => (
                     <div className="col-md-4" key={project._id}>
-                        <ProjectCard project={project} />
+                        <ProjectCard project={project} user={user} />
                     </div>
                 ))}
             </div>
