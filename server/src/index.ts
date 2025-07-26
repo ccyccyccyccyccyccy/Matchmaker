@@ -1,5 +1,5 @@
 import { app, mongoose } from "./config";
-import { generateToken, verifyToken } from "./auth";
+import { generateToken, verifyToken, hashPassword, verifyPassword} from "./auth";
 import UserNoPassword from '../../shared/types/User'; // Import User type from shared types
 import User from "./types/User"; 
 import Project from "../../shared/types/Project";
@@ -48,9 +48,10 @@ app.post(
     (req: Request<{}, any, LoginRequestBody>, res: Response) => {
         const { email, password } = req.body;
         UserModel.findOne({ email: email })
-            .then((user: User | null) => {
+            .then(async (user: User | null) => {
                 if (user) {
-                    if (user.password === password) {
+                    const isValid = await verifyPassword(password, user.password);
+                    if (isValid) {
                         const token = generateToken(user._id); // Generate JWT
                         const userNoPassword: UserNoPassword = {
                             _id: user._id,
@@ -73,8 +74,9 @@ app.post(
     }
 )
 
-app.post("/register", (req: Request<{}, any, RegisterRequestBody>, res:Response) => {
+app.post("/register", async(req: Request<{}, any, RegisterRequestBody>, res:Response) => {
     console.log("Received request body:", req.body);
+    req.body.password= await hashPassword(req.body.password);
     UserModel.create(req.body as RegisterRequestBody)
     .then((user: User) => res.json(user))
     .catch((err: unknown) => res.json(err))
