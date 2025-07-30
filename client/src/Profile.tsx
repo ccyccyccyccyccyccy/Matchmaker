@@ -82,6 +82,10 @@ function Profile(){
     navigate("/profile/${user._id}/addProject");
   };
 
+  const handleUpdateProfile = () => {
+    navigate("/profile/${user._id}/updateProfile");
+  };
+
     if (!token){
        navigate("/login")
         alert("You must be logged in.")
@@ -112,6 +116,9 @@ function Profile(){
             <h1>
                 user profile: {user?._id}
             </h1>
+            <button onClick={handleUpdateProfile}>
+            Edit profile
+            </button>
             <button onClick={handleAddClick}>
             Add project
             </button>

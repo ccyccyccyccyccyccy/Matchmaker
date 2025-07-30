@@ -10,6 +10,7 @@ import Home from './Home'
 import ProjectPage from './ProjectPage'
 import Profile from './Profile'
 import InputForm from './InputForm'
+import ProfileForm from './ProfileForm'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -24,6 +25,7 @@ function App() {
         <Route path="/profile/:userId" element={<Profile />} />
         <Route path="/profile/:userId/addProject" element={<InputForm />} />
         <Route path="/profile/:userId/editProject" element={<InputForm />} />
+        <Route path="/profile/:userId/updateProfile" element={<ProfileForm />} />
       </Routes>
     </BrowserRouter>
   )
